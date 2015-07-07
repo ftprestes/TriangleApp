@@ -32,16 +32,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/imageView"
-            android:layout_x="16dp"
+            android:layout_x="0dp"
             android:layout_y="67dp"
             android:background="@drawable/triangulo" />
 
         <SeekBar
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="50dp"
             android:id="@+id/speedChoose"
-            android:layout_x="9dp"
-            android:layout_y="403dp"
+            android:layout_x="0dp"
+            android:layout_y="400dp"
             android:indeterminate="false"
             android:max="2"
             android:progress="1" />
@@ -50,6 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/textView"
+            android:text="1X"
             android:layout_x="39dp"
             android:layout_y="464dp" />
 

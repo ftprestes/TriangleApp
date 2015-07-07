@@ -34,41 +34,55 @@ public class MainActivity extends Activity{
         btnPlay = (Button)findViewById(R.id.buttonPlay);
         btnStop = (Button)findViewById(R.id.buttonStop);
         seekBar = (SeekBar)findViewById(R.id.speedChoose);
+        seekBar.setVisibility(View.INVISIBLE);
         text = (TextView) findViewById(R.id.textView);
-
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                p = progress;
-                text.setText(Integer.toString(p));
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                p = seekBar.getProgress();
-            }
-        });
 
         btnPlay.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (p == 0) {
-                    triangleSound0.start();
-                    triangleSound0.setLooping(true);
-                }
-                if(p == 1){
-                    triangleSound1.start();
-                    triangleSound1.setLooping(true);
-                }
-                if(p == 2) {
-                    triangleSound2.start();
-                    triangleSound2.setLooping(true);
-                }
-                seekBar.setVisibility(View.INVISIBLE);
+                triangleSound1.start();
+                triangleSound1.setLooping(true);
+                seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                        p = progress;
+                        text.setText(Integer.toString(p) + "X");
+                        if (p == 0) {
+                            if (triangleSound1.isPlaying())
+                                triangleSound1.pause();
+                            if (triangleSound2.isPlaying())
+                                triangleSound2.pause();
+                            triangleSound0.start();
+                            triangleSound0.setLooping(true);
+                        }
+                        if (p == 1) {
+                            if (triangleSound0.isPlaying())
+                                triangleSound0.pause();
+                            if (triangleSound2.isPlaying())
+                                triangleSound2.pause();
+                            triangleSound1.start();
+                            triangleSound1.setLooping(true);
+                        }
+                        if (p == 2) {
+                            if (triangleSound1.isPlaying())
+                                triangleSound1.pause();
+                            if (triangleSound0.isPlaying())
+                                triangleSound0.pause();
+                            triangleSound2.start();
+                            triangleSound2.setLooping(true);
+                        }
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+                    }
+                });
+                seekBar.setProgress(1);
+                seekBar.setVisibility(View.VISIBLE);
                 btnPlay.setVisibility(View.INVISIBLE);
                 btnStop.setVisibility(View.VISIBLE);
             }
@@ -77,16 +91,14 @@ public class MainActivity extends Activity{
         btnStop.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (p == 0) {
-                    triangleSound0.pause();
-                }
-                if(p == 1){
+                text.setText(Integer.toString(1) + "X");
+                if(triangleSound1.isPlaying())
                     triangleSound1.pause();
-                }
-                if(p == 2) {
+                if(triangleSound0.isPlaying())
+                    triangleSound0.pause();
+                if(triangleSound2.isPlaying())
                     triangleSound2.pause();
-                }
-                seekBar.setVisibility(View.VISIBLE);
+                seekBar.setVisibility(View.INVISIBLE);
                 btnStop.setVisibility(View.INVISIBLE);
                 btnPlay.setVisibility(View.VISIBLE);
             }
@@ -98,17 +110,23 @@ public class MainActivity extends Activity{
     protected void onStop() {
         super.onStop();
         triangleSound1.release();
+        triangleSound0.release();
+        triangleSound2.release();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         triangleSound1.release();
+        triangleSound0.release();
+        triangleSound2.release();
     }
 
     @Override
    protected void onPause() {
        super.onPause();
-       triangleSound1.release();
+        triangleSound1.release();
+        triangleSound0.release();
+        triangleSound2.release();
    }
 }
