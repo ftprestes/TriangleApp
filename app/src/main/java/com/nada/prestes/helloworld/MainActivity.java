@@ -8,6 +8,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -26,9 +27,10 @@ public class MainActivity extends Activity{
     private TextView text;
     private SeekBar seekBar;
     private Button btnPlay, btnStop;
-    private SoundPool triangleSound = null;
+    private SoundPool triangleSound;
     private float j = 1.0f;
-    private int sID = 0;
+    private int soundId, streamId;
+    boolean loaded = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,14 +42,30 @@ public class MainActivity extends Activity{
         seekBar = (SeekBar)findViewById(R.id.speedChoose);
         seekBar.setVisibility(View.INVISIBLE);
         text = (TextView) findViewById(R.id.textView);
-        triangleSound = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
+        triangleSound = new SoundPool(100, AudioManager.STREAM_MUSIC, 100);
+        this.setVolumeControlStream(AudioManager.STREAM_MUSIC);
+        triangleSound.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+            @Override
+            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+                loaded = true;
+            }
+        });
+
+        soundId = triangleSound.load(MainActivity.this, R.drawable.music_triangulo, 1);
 
         btnPlay.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                sID = triangleSound.load(MainActivity.this, R.drawable.music_triangulo, 1);
-                triangleSound.play(sID, 1, 1, 1, -1, 1);
-
+                AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+                float actualVolume = (float) audioManager
+                        .getStreamVolume(AudioManager.STREAM_MUSIC);
+                float maxVolume = (float) audioManager
+                        .getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+                float volume = actualVolume / maxVolume;
+                if (loaded) {
+                    streamId = triangleSound.play(soundId, volume, volume, 1, 0, 1f);
+                    Log.e("Test", "Played sound");
+                }
 
                 seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                     @Override
@@ -55,12 +73,16 @@ public class MainActivity extends Activity{
 
                         text.setText(Integer.toString(progress) + "X");
                         if (progress == 0) {
-
+                            triangleSound.setRate(streamId, 0.5f);
+                            triangleSound.setLoop(streamId, -1);
                         }
                         if (progress == 1) {
-
+                            triangleSound.setRate(streamId, 1.0f);
+                            triangleSound.setLoop(streamId, -1);
                         }
                         if (progress == 2) {
+                            triangleSound.setRate(streamId, 2.0f);
+                            triangleSound.setLoop(streamId, -1);
                         }
                     }
 
@@ -82,6 +104,7 @@ public class MainActivity extends Activity{
         btnStop.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                triangleSound.stop(streamId);
                 seekBar.setProgress(1);
                 text.setText(Integer.toString(1) + "X");
                 seekBar.setVisibility(View.INVISIBLE);
