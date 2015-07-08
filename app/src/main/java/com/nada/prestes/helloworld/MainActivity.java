@@ -42,30 +42,14 @@ public class MainActivity extends Activity{
         seekBar = (SeekBar)findViewById(R.id.speedChoose);
         seekBar.setVisibility(View.INVISIBLE);
         text = (TextView) findViewById(R.id.textView);
-        triangleSound = new SoundPool(100, AudioManager.STREAM_MUSIC, 100);
-        this.setVolumeControlStream(AudioManager.STREAM_MUSIC);
-        triangleSound.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
-            @Override
-            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-                loaded = true;
-            }
-        });
+        triangleSound = new SoundPool(4, AudioManager.STREAM_MUSIC, 100);
 
         soundId = triangleSound.load(MainActivity.this, R.drawable.music_triangulo, 1);
 
         btnPlay.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
-                float actualVolume = (float) audioManager
-                        .getStreamVolume(AudioManager.STREAM_MUSIC);
-                float maxVolume = (float) audioManager
-                        .getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-                float volume = actualVolume / maxVolume;
-                if (loaded) {
-                    streamId = triangleSound.play(soundId, volume, volume, 1, 0, 1f);
-                    Log.e("Test", "Played sound");
-                }
+                streamId = triangleSound.play(soundId, 1, 1, 1, 0, 1f);
 
                 seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                     @Override
@@ -75,14 +59,17 @@ public class MainActivity extends Activity{
                         if (progress == 0) {
                             triangleSound.setRate(streamId, 0.5f);
                             triangleSound.setLoop(streamId, -1);
+                            text.setText("zero");
                         }
                         if (progress == 1) {
                             triangleSound.setRate(streamId, 1.0f);
                             triangleSound.setLoop(streamId, -1);
+                            text.setText("um");
                         }
                         if (progress == 2) {
                             triangleSound.setRate(streamId, 2.0f);
                             triangleSound.setLoop(streamId, -1);
+                            text.setText("dois");
                         }
                     }
 
