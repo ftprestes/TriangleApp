@@ -1,4 +1,5 @@
 package com.nada.prestes.helloworld;
+
 import android.app.Activity;
 import android.media.AudioManager;
 import android.media.SoundPool;
@@ -12,7 +13,12 @@ import android.widget.TextView;
 /**
  * Created by prestes on 04/07/15.
  */
-public class MainActivity extends Activity{
+public class MainActivity extends Activity {
+
+    public static final float MIN_RANGE = 0.8f;
+    public static final float MAX_RANGE = 1.5f;
+    public static final int NUMBER_OF_STEPS = 20;
+    public static final int DEFAULT_RANGE = 10;
 
     private TextView text;
     private SeekBar seekBar;
@@ -26,9 +32,9 @@ public class MainActivity extends Activity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        btnPlay = (Button)findViewById(R.id.buttonPlay);
-        btnStop = (Button)findViewById(R.id.buttonStop);
-        seekBar = (SeekBar)findViewById(R.id.speedChoose);
+        btnPlay = (Button) findViewById(R.id.buttonPlay);
+        btnStop = (Button) findViewById(R.id.buttonStop);
+        seekBar = (SeekBar) findViewById(R.id.speedChoose);
         seekBar.setVisibility(View.INVISIBLE);
         text = (TextView) findViewById(R.id.textView);
         triangleSound = new SoundPool(4, AudioManager.STREAM_MUSIC, 100);
@@ -38,25 +44,12 @@ public class MainActivity extends Activity{
         btnPlay.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                streamId = triangleSound.play(soundId, 1, 1, 1, -1, 1.1f);
+                streamId = triangleSound.play(soundId, 1, 1, 1, -1, 1.0f);
 
                 seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                     @Override
                     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
-                        text.setText(Integer.toString(progress) + "X");
-                        if (progress == 0) {
-                            triangleSound.setRate(streamId, 0.5f);
-                            text.setText("zero");
-                        }
-                        if (progress == 1) {
-                            triangleSound.setRate(streamId, 1.0f);
-                            text.setText("um");
-                        }
-                        if (progress == 2) {
-                            triangleSound.setRate(streamId, 2.0f);
-                            text.setText("dois");
-                        }
+                        changeRate(progress);
                     }
 
                     @Override
@@ -68,6 +61,7 @@ public class MainActivity extends Activity{
                     }
 
                 });
+
                 seekBar.setVisibility(View.VISIBLE);
                 btnPlay.setVisibility(View.INVISIBLE);
                 btnStop.setVisibility(View.VISIBLE);
@@ -78,14 +72,21 @@ public class MainActivity extends Activity{
             @Override
             public void onClick(View v) {
                 triangleSound.stop(streamId);
-                seekBar.setProgress(1);
-                text.setText(Integer.toString(1) + "X");
+
+                changeRate(DEFAULT_RANGE);
+
                 seekBar.setVisibility(View.INVISIBLE);
-                btnStop.setVisibility(View.INVISIBLE);
                 btnPlay.setVisibility(View.VISIBLE);
+                btnStop.setVisibility(View.INVISIBLE);
             }
         });
 
+    }
+
+    private void changeRate(int progress) {
+        float rate = (((MAX_RANGE - MIN_RANGE) / NUMBER_OF_STEPS) * progress) + MIN_RANGE;
+        text.setText(Integer.toString(progress * (100 / NUMBER_OF_STEPS)) + "%");
+        triangleSound.setRate(streamId, rate);
     }
 
 
@@ -105,7 +106,7 @@ public class MainActivity extends Activity{
     }
 
     @Override
-   protected void onPause() {
-       super.onPause();
-   }
+    protected void onPause() {
+        super.onPause();
+    }
 }
