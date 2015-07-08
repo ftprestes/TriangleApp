@@ -50,7 +50,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/textView"
-            android:text="1X"
             android:layout_x="39dp"
             android:layout_y="464dp" />
 

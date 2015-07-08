@@ -15,7 +15,7 @@ import android.widget.TextView;
  */
 public class MainActivity extends Activity {
 
-    public static final float MIN_RANGE = 0.8f;
+    public static final float MIN_RANGE = 0.5f;
     public static final float MAX_RANGE = 1.5f;
     public static final int NUMBER_OF_STEPS = 20;
     public static final int DEFAULT_RANGE = 10;
@@ -24,7 +24,6 @@ public class MainActivity extends Activity {
     private SeekBar seekBar;
     private Button btnPlay, btnStop;
     private SoundPool triangleSound;
-    private float j = 1.0f;
     private int soundId, streamId;
 
     @Override
@@ -37,6 +36,7 @@ public class MainActivity extends Activity {
         seekBar = (SeekBar) findViewById(R.id.speedChoose);
         seekBar.setVisibility(View.INVISIBLE);
         text = (TextView) findViewById(R.id.textView);
+
         triangleSound = new SoundPool(4, AudioManager.STREAM_MUSIC, 100);
 
         soundId = triangleSound.load(MainActivity.this, R.drawable.teste_triangulo, 1);
@@ -74,6 +74,7 @@ public class MainActivity extends Activity {
                 triangleSound.stop(streamId);
 
                 changeRate(DEFAULT_RANGE);
+                seekBar.setProgress(DEFAULT_RANGE);
 
                 seekBar.setVisibility(View.INVISIBLE);
                 btnPlay.setVisibility(View.VISIBLE);
@@ -85,7 +86,7 @@ public class MainActivity extends Activity {
 
     private void changeRate(int progress) {
         float rate = (((MAX_RANGE - MIN_RANGE) / NUMBER_OF_STEPS) * progress) + MIN_RANGE;
-        text.setText(Integer.toString(progress * (100 / NUMBER_OF_STEPS)) + "%");
+        text.setText(String.format("%.2g", rate) + "x");
         triangleSound.setRate(streamId, rate);
     }
 
