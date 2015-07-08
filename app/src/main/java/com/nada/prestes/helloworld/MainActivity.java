@@ -33,7 +33,7 @@ public class MainActivity extends Activity{
         text = (TextView) findViewById(R.id.textView);
         triangleSound = new SoundPool(4, AudioManager.STREAM_MUSIC, 100);
 
-        soundId = triangleSound.load(MainActivity.this, R.drawable.testeTriangulo, 1);
+        soundId = triangleSound.load(MainActivity.this, R.drawable.teste_triangulo, 1);
 
         btnPlay.setOnClickListener(new OnClickListener() {
             @Override
